@@ -4,8 +4,12 @@ $(document).ready(function(){
     var map = new google.maps.Map(
         document.getElementById('map'), {zoom: 7.5, center: uluru});
 
-    $("#mapButt").on("click", function (ev) {
-        $.ajax("https://api.openchargemap.io/v3/poi/?output=json&countrycode=HU&maxresults=100",
+    $("#mapButt").on("click", mapRequest);
+
+    function mapRequest() {
+        $("#mapButt").off("click", mapRequest);
+        $("#spinner").toggleClass("d-none");
+        $.ajax("https://api.openchargemap.io/v3/poi/?output=json&countrycode=HU&maxresults=1000",
         {
             method: "GET",
             data: {
@@ -15,9 +19,11 @@ $(document).ready(function(){
         })
         .done(function (result) {
             //console.log(result);
+            $("#spinner").toggleClass("d-none");
+            $("#mapButt").on("click", mapRequest);
             putMarkers(result);
         });
-    });
+    }
 
     
     function putMarkers(markers) {
